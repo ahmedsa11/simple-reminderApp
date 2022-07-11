@@ -1,35 +1,35 @@
 import "./App.css";
-import { useState } from "react";
-import { connect } from "react-redux";
+import React,{ useState } from "react";
+import {useDispatch,useSelector} from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import reminderimg from './unnamed.png';
-import {
-  addReminders,
-  clearReminders,
-  clearAllreminders,
-} from "./actions/index";
+import { addReminders,clearAllreminders,clearReminders } from "./reduser/reminderslice";
 import moment from "moment";
-function App(props) {
-  console.log("props", props);
+// import { read_cookie,bake_cookie} from "sfcookies";
+function App() {
   const [text, setText] = useState("");
   const [date, setDate] = useState(new Date());
+  const { reminder} = useSelector((state) => state.reminder);
+  const dispatch = useDispatch();
+  // useEffect(()=>{
+  //  dispatch(savedata())
+  // },[reminder])
   const renderReminders = () => {
-    const { reminders } = props;
     return (
       <ul>
-        {reminders.map((item) => {
-          return (
+        {reminder.length>0? 
+        reminder.map((item) => 
             <li className="rem" key={item.id}>
               <div>{item.text}</div>
               <div>{moment(new Date(item.date)).fromNow()}</div>
-              <div className="delete" onClick={() => props.clearReminders(item.id)}>x</div>
+              <div className="delete" onClick={() => dispatch(clearReminders(item.id))}>x</div>
             </li>
-          );
-        })}
+        )
+      : <div>No Reminders</div>}
       </ul>
     );
-  };
+  }; 
   return (
     <div className="app">
       <div className="reminder">
@@ -53,14 +53,14 @@ function App(props) {
         <div className="buttons">
         <button
           onClick={() => {
-            props.addReminders(text, date);
+          dispatch(addReminders({ text, date }));
             setText("");
             setDate(new Date());
           }}
         >
           Add Reminder
         </button>
-        <button onClick={() => props.clearAllreminders()}>
+        <button onClick={() => dispatch(clearAllreminders())}>
           Clear Reminders
         </button>
         </div>
@@ -68,10 +68,4 @@ function App(props) {
     </div>
   );
 }
-
-export default connect(
-  (state) => {
-    return { reminders: state };
-  },
-  { addReminders, clearReminders, clearAllreminders }
-)(App);
+export default App;

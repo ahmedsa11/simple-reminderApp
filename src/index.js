@@ -2,13 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { createStore } from 'redux';
 import reportWebVitals from './reportWebVitals';
-import Reduser from './reduser/redusers';
 import { Provider } from 'react-redux';
-const store=createStore(Reduser)
-
-
+import store from '../src/store/store';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
